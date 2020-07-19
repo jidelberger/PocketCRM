@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <Version Value="12"/>
+    <BuildModes Active="Default"/>
+    <Units>
+      <Unit>
+        <Filename Value="ProfiLineCRM.ppr"/>
+        <FRMtype Value="0"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="-1"/>
+        <TopLine Value="-1"/>
+        <CursorPos X="-1" Y="-1"/>
+        <UsageCount Value="118"/>
+      </Unit>
+      <Unit>
+        <Filename Value="mainform.pas"/>
+        <FRMtype Value="200"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="243"/>
+        <CursorPos X="19" Y="163"/>
+        <UsageCount Value="118"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="mwcrmdocument.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="423"/>
+        <CursorPos X="3" Y="452"/>
+        <UsageCount Value="118"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/local/codetyphon/typhon/lcl/interfaces/carbon/pascocoa/appkit/NSGraphicsContext.inc"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="336"/>
+        <CursorPos X="13" Y="334"/>
+        <UsageCount Value="1"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/local/codetyphon/typhon/lcl/include/controlscrollbar.inc"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="259"/>
+        <CursorPos Y="282"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/local/codetyphon/typhon/lcl/forms.pp"/>
+        <FRMtype Value="0"/>
+        <UnitName Value="Forms"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/local/codetyphon/typhon/lcl/include/control.inc"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="3533"/>
+        <CursorPos Y="3565"/>
+        <UsageCount Value="8"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/local/codetyphon/typhon/lcl/include/customedit.inc"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="573"/>
+        <CursorPos Y="597"/>
+        <UsageCount Value="8"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/local/codetyphon/typhon/lcl/include/wincontrol.inc"/>
+        <FRMtype Value="0"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="8306"/>
+        <CursorPos Y="8329"/>
+        <UsageCount Value="8"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/local/codetyphon/typhon/lcl/interfaces/cocoa/cocoawscommon.pas"/>
+        <FRMtype Value="0"/>
+        <UnitName Value="CocoaWSCommon"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1601"/>
+        <CursorPos Y="1619"/>
+        <UsageCount Value="8"/>
+      </Unit>
+    </Units>
+    <JumpHistory HistoryIndex="29">
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="139" TopLine="122"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="140" TopLine="122"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="141" TopLine="122"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="143" TopLine="122"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="144" TopLine="122"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="145" TopLine="122"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="146" TopLine="122"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="147" TopLine="122"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="148" TopLine="122"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="149" TopLine="122"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="150" TopLine="122"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="151" TopLine="122"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="152" TopLine="122"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="154" TopLine="122"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="155" TopLine="123"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="156" TopLine="124"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="157" TopLine="125"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="158" TopLine="127"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="160" TopLine="128"/>
+      </Position>
+      <Position>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="119" Column="54" TopLine="119"/>
+      </Position>
+      <Position>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="125" Column="35" TopLine="105"/>
+      </Position>
+      <Position>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="145" Column="9" TopLine="129"/>
+      </Position>
+      <Position>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="86" Column="24" TopLine="76"/>
+      </Position>
+      <Position>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="124" Column="24" TopLine="106"/>
+      </Position>
+      <Position>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="153" Column="23" TopLine="116"/>
+      </Position>
+      <Position>
+        <Filename Value="mainform.pas"/>
+        <Caret Line="264" Column="23" TopLine="231"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="433" Column="61" TopLine="408"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="386" Column="32" TopLine="367"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="390" Column="88" TopLine="374"/>
+      </Position>
+      <Position>
+        <Filename Value="mwcrmdocument.pas"/>
+        <Caret Line="414" Column="10" TopLine="401"/>
+      </Position>
+    </JumpHistory>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes ActiveMode=""/>
+    </RunParams>
+  </ProjectSession>
+</CONFIG>
