@@ -30,6 +30,8 @@ type
     ATransaction : TSQLTransaction;
     AQuery : TSQLQuery;
     public
+    constructor Create;
+    destructor Destroy; override;
     Function CreateTable() : Boolean;
     Function InsertEntry() : Boolean;
     Function FetchEntry(ContactID : Integer) : Boolean;
@@ -43,17 +45,21 @@ type
     Name : String;
     SQLString : String;
     Changed : Boolean;
+    AllGroups : TStringList;
     private
     AConnection : TSQLite3Connection;
     ATransaction : TSQLTransaction;
     AQuery : TSQLQuery;
     public
+    constructor Create;
+    destructor Destroy; override;
     Function CreateTable() : Boolean;
     Function InsertEntry() : Boolean;
     Function NewContactAndGroup(NewContact : Integer; NewGroup :Integer) : Boolean;
     Function FetchEntry(GID : Integer) : Boolean;
     Function UpdateEntry(GID : Integer) : Boolean;
     Function CheckID(GID : Integer) : Boolean;
+    Function FetchAll() : Boolean;
   end;
 
 implementation
@@ -90,9 +96,29 @@ end;
 
 // Contacts
 
-Function TCRMContactdoc.CreateTable() : Boolean;
+constructor TCRMContactdoc.Create;
 var
-  s : String;
+  s: String;
+Begin
+  inherited;
+  AConnection := TSQLite3Connection.Create(nil);
+  s := getinstalldir;
+  AConnection.DatabaseName := s+'/PLCRM.db';
+  ATransaction := TSQLTransaction.Create(AConnection);
+  AConnection.Transaction := ATransaction;
+  AQuery := TSQLQuery.Create(nil);
+  AQuery.Database := AConnection;
+end;
+
+destructor TCRMContactdoc.Destroy;
+Begin
+  FreeAndNil(ATransaction);
+  FreeAndNil(AConnection);
+  FreeAndNil(AQuery);
+  inherited;
+end;
+
+Function TCRMContactdoc.CreateTable() : Boolean;
 Begin
   SQLString := 'CREATE TABLE IF NOT EXISTS contacts ( ' ;
   SQLString := SQLSTring + 'contact_id INTEGER PRIMARY KEY, ';
@@ -104,41 +130,25 @@ Begin
   SQLString := SQLSTring + 'email TEXT NOT NULL UNIQUE, ';
   SQLString := SQLSTring + 'phone TEXT NOT NULL UNIQUE);';
   try
-    AConnection := TSQLite3Connection.Create(nil);
-    s := getinstalldir;
-    AConnection.DatabaseName := s+'/PLCRM.db';
-    ATransaction := TSQLTransaction.Create(AConnection);
-    AConnection.Transaction := ATransaction;
     AConnection.Open;
     ATransaction.StartTransaction;
     AConnection.ExecuteDirect(SQLString);
-
-    ATransaction.Commit;
   finally
+    ATransaction.Commit;
     AConnection.Close;
-    ATransaction.Free;
-    AConnection.Free;
   end;
   Changed := False;
   CreateTable := True;
 end;
 
 Function TCRMContactdoc.InsertEntry() : Boolean;
-var
-  s : String;
 begin
   try
-    AConnection := TSQLite3Connection.Create(nil);
-    ATransaction := TSQLTransaction.Create(AConnection);
-    AConnection.Transaction := ATransaction;
-    s := getinstalldir;
-    AConnection.DatabaseName := s+'/PLCRM.db';
     SQLString := 'INSERT INTO contacts (';
     SQLString := SQLString + 'contact_id, first_name, last_name, adress, plz, ort, email, phone) ';
     SQLString := SQLString + 'values (:contact_id, :first_name, :last_name, :adress, :plz, :ort, :email, :phone);';
-    AQuery := TSQLQuery.Create(nil);
-    AQuery.Database := AConnection;
     AQuery.SQL.Text := SQLString;
+    AConnection.Open;
     Aquery.Prepare;
     // Params holen
     AQuery.Params.ParamByName('contact_id').AsInteger := ID;
@@ -154,26 +164,15 @@ begin
   finally
     AQuery.Close;
     AConnection.Close;
-    AQuery.Free;
-    ATransaction.Free;
-    AConnection.Free;
   end;
   InsertEntry := true;
 end;
 
 Function TCRMContactdoc.FetchEntry(ContactID : Integer) : Boolean;
-var
-  s : String;
 begin
   try
-    AConnection := TSQLite3Connection.Create(nil);
-    ATransaction := TSQLTransaction.Create(AConnection);
-    AConnection.Transaction := ATransaction;
-    s := getinstalldir;
-    AConnection.DatabaseName := s+'/PLCRM.db';
-    AQuery := TSQLQuery.Create(nil);
     AQuery.SQL.Text := 'SELECT * FROM contacts WHERE contact_id = '+IntToStr(ContactID);
-    AQuery.Database := AConnection;
+    AConnection.Open;
     AQuery.Open;
   finally
     ID := AQuery.FieldByName('contact_id').AsInteger;
@@ -186,27 +185,15 @@ begin
     Phone := AQuery.FieldByName('phone').AsString;
     AQuery.Close;
     AConnection.Close;
-    AQuery.Free;
-    ATransaction.Free;
-    AConnection.Free;
   end;
-
   FetchEntry := true;
 end;
 
 Function TCRMContactdoc.UpdateEntry() : Boolean;
-var
-  s : String;
 Begin
   try
-    AConnection := TSQLite3Connection.Create(nil);
-    ATransaction := TSQLTransaction.Create(AConnection);
-    AConnection.Transaction := ATransaction;
-    s := getinstalldir;
-    AConnection.DatabaseName := s+'/PLCRM.db';
-    AQuery := TSQLQuery.Create(nil);
-    AQuery.DataBase := AConnection;
     AQuery.SQL.Text := 'select * from contacts where contact_id = ' + IntToStr(ID);
+    AConnection.Open;
     AQuery.Open;
     AQuery.Edit;
     AQuery.FieldByName('contact_id').AsInteger := ID;
@@ -224,28 +211,17 @@ Begin
   finally
     AQuery.Close;
     AConnection.Close;
-    AQuery.Free;
-    ATransaction.Free;
-    AConnection.Free;
   end;
   Changed := false;
   UpdateEntry := True;
 end;
 
 Function TCRMContactdoc.CheckID(CID : Integer) : Boolean;
-var
-  s : string;
 Begin
   SQLString := 'SELECT contact_id FROM contacts WHERE contact_id = ' + IntToStr(CID);
   try
-    AConnection := TSQLite3Connection.Create(nil);
-    ATransaction := TSQLTransaction.Create(AConnection);
-    AConnection.Transaction := ATransaction;
-    s := getinstalldir;
-    AConnection.DatabaseName := s+'/PLCRM.db';
-    AQuery := TSQLQuery.Create(nil);
+    AConnection.Open;
     AQuery.SQL.Text := SQLString;
-    AQuery.Database := AConnection;
     AQuery.Open;
   finally
     if AQuery.RecordCount = 0 then
@@ -254,24 +230,38 @@ Begin
       CheckID := True;
     AQuery.Close;
     AConnection.Close;
-    AQuery.Free;
-    ATransaction.Free;
-    AConnection.Free;
   end;
 end;
 
 //Groupts
-Function TCRMGroupdoc.CreateTable() : Boolean;
+constructor TCRMGroupdoc.Create;
 var
   s : String;
 begin
+  inherited;
+  AConnection := TSQLite3Connection.Create(nil);
+  s := getinstalldir;
+  AConnection.DatabaseName := s+'/PLCRM.db';
+  ATransaction := TSQLTransaction.Create(AConnection);
+  AConnection.Transaction := ATransaction;
+  AQuery := TSQLQuery.Create(nil);
+  AQuery.Database := AConnection;
+  AllGroups := TStringList.Create;
+end;
+
+destructor TCRMGroupdoc.Destroy;
+Begin
+  FreeAndNil(ATransaction);
+  FreeAndNil(AConnection);
+  FreeAndNil(AQuery);
+  FreeAndNil(AllGroups);
+  inherited;
+end;
+
+Function TCRMGroupdoc.CreateTable() : Boolean;
+begin
   try
     SQLString:= 'CREATE TABLE IF NOT EXISTS groups (group_id INTEGER PRIMARY KEY, name TEXT NOT NULL);';
-    AConnection := TSQLite3Connection.Create(nil);
-    s := getinstalldir;
-    AConnection.DatabaseName := s+'/PLCRM.db';
-    ATransaction := TSQLTransaction.Create(AConnection);
-    AConnection.Transaction := ATransaction;
     AConnection.Open;
     ATransaction.StartTransaction;
     AConnection.ExecuteDirect(SQLString);
@@ -283,32 +273,22 @@ begin
     SQLString := SQLString + 'FOREIGN KEY (group_id)  REFERENCES groups (group_id) ON DELETE CASCADE ON UPDATE NO ACTION);';
     ATransaction.StartTransaction;
     AConnection.ExecuteDirect(SQLString);
-    ATransaction.Commit;
   finally
+    ATransaction.Commit;
     AConnection.Close;
-    ATransaction.Free;
-    AConnection.Free;
   end;
   Changed := False;
   CreateTable := true;
 end;
 
 Function TCRMGroupdoc.InsertEntry() : Boolean;
-var
-  s : String;
 begin
   try
-    AConnection := TSQLite3Connection.Create(nil);
-    ATransaction := TSQLTransaction.Create(AConnection);
-    AConnection.Transaction := ATransaction;
-    s := getinstalldir;
-    AConnection.DatabaseName := s+'/PLCRM.db';
     SQLString := 'INSERT INTO groups (';
     SQLString := SQLString + 'group_id, name) ';
-    SQLString := SQLString + 'values (:goup_id, name);';
-    AQuery := TSQLQuery.Create(nil);
-    AQuery.Database := AConnection;
+    SQLString := SQLString + 'values (:group_id, :name);';
     AQuery.SQL.Text := SQLString;
+    AConnection.Open;
     Aquery.Prepare;
     // Params holen
     AQuery.Params.ParamByName('group_id').AsInteger := GroupID;
@@ -318,53 +298,32 @@ begin
   finally
     AQuery.Close;
     AConnection.Close;
-    AQuery.Free;
-    ATransaction.Free;
-    AConnection.Free;
   end;
   InsertEntry := true;
 end;
 
 Function TCRMGroupdoc.FetchEntry(GID : Integer) : Boolean;
-var
-  s : String;
+
 begin
   try
-    AConnection := TSQLite3Connection.Create(nil);
-    ATransaction := TSQLTransaction.Create(AConnection);
-    AConnection.Transaction := ATransaction;
-    s := getinstalldir;
-    AConnection.DatabaseName := s+'/PLCRM.db';
-    AQuery := TSQLQuery.Create(nil);
-    AQuery.SQL.Text := 'SELECT * FROM groups WHERE group_id = '+IntToStr(GID);
-    AQuery.Database := AConnection;
+    AQuery.SQL.Text := 'SELECT * FROM groups WHERE group_id = '+IntToStr(GID)+';';
+    AConnection.Open;
     AQuery.Open;
   finally
     GroupID := AQuery.FieldByName('contact_id').AsInteger;
     Name := AQuery.FieldByName('name').AsString;
     AQuery.Close;
     AConnection.Close;
-    AQuery.Free;
-    ATransaction.Free;
-    AConnection.Free;
   end;
 
   FetchEntry := true;
 end;
 
 Function TCRMGroupdoc.UpdateEntry(gID : Integer) : Boolean;
-var
-  s : String;
 Begin
   try
-    AConnection := TSQLite3Connection.Create(nil);
-    ATransaction := TSQLTransaction.Create(AConnection);
-    AConnection.Transaction := ATransaction;
-    s := getinstalldir;
-    AConnection.DatabaseName := s+'/PLCRM.db';
-    AQuery := TSQLQuery.Create(nil);
-    AQuery.DataBase := AConnection;
-    AQuery.SQL.Text := 'select * from groups where group_id = ' + IntToStr(gID);
+    AQuery.SQL.Text := 'select * from groups where group_id = ' + IntToStr(gID)+';';
+    AConnection.Open;
     AQuery.Open;
     AQuery.Edit;
     AQuery.FieldByName('name').AsString := Name;
@@ -375,28 +334,17 @@ Begin
   finally
     AQuery.Close;
     AConnection.Close;
-    AQuery.Free;
-    ATransaction.Free;
-    AConnection.Free;
   end;
   Changed := false;
   UpdateEntry := True;
 end;
 
 Function TCRMGroupdoc.CheckID(GID : Integer) : Boolean;
-var
-  s : string;
 Begin
-  SQLString := 'SELECT contact_id FROM contact_groups WHERE contact_id = ' + IntToStr(GID);
+  SQLString := 'SELECT contact_id FROM contact_groups WHERE contact_id = ' + IntToStr(GID)+';';
   try
-    AConnection := TSQLite3Connection.Create(nil);
-    ATransaction := TSQLTransaction.Create(AConnection);
-    AConnection.Transaction := ATransaction;
-    s := getinstalldir;
-    AConnection.DatabaseName := s+'/PLCRM.db';
-    AQuery := TSQLQuery.Create(nil);
+    AConnection.Open;
     AQuery.SQL.Text := SQLString;
-    AQuery.Database := AConnection;
     AQuery.Open;
   finally
     if AQuery.RecordCount = 0 then
@@ -405,28 +353,36 @@ Begin
       CheckID := True;
     AQuery.Close;
     AConnection.Close;
-    AQuery.Free;
-    ATransaction.Free;
-    AConnection.Free;
   end;
 end;
 
-//Groupts
+Function TCRMGroupDoc.FetchAll() : Boolean;
+Begin
+    AQuery.SQL.Text := 'SELECT * FROM groups;';
+    try
+      AConnection.Open;
+      AQuery.Open;
+      AllGroups.Clear;
+      While not AQuery.EOF do
+      Begin
+        AllGroups.Add(AQuery.FieldByName('name').AsString);
+        AQuery.Next;
+      end;
+    finally
+      AQuery.Close;
+      AConnection.Close;
+    end;
+    Result := true;
+end;
+
+//Groupts and Contacts
 Function TCRMGroupdoc.NewContactAndGroup(NewContact : Integer; NewGroup :Integer) : Boolean;
-var
-  s : String;
 begin
-  AConnection := TSQLite3Connection.Create(nil);
-  ATransaction := TSQLTransaction.Create(AConnection);
-  AConnection.Transaction := ATransaction;
-  s := getinstalldir;
-  AConnection.DatabaseName := s+'/PLCRM.db';
-  AQuery := TSQLQuery.Create(nil);
   if CheckID(NewContact) = true then
     begin
-      SQLString := 'SELECT contact_id FROM contact_groups WHERE contact_id = ' + IntToStr(NewContact);
+      SQLString := 'SELECT contact_id FROM contact_groups WHERE contact_id = ' + IntToStr(NewContact)+';';
       try
-        AQuery.DataBase := AConnection;
+        AConnection.Open;
         AQuery.SQL.Text := SQLString;
         AQuery.Open;
         AQuery.Edit;
@@ -437,21 +393,20 @@ begin
         ATransaction.Commit;
       finally
         AQuery.Close;
+        AConnection.Close;
       end;
     end;
   if CheckID(NewContact) = false then
     begin
       try
+        AConnection.Open;
         ATransaction.StartTransaction;
         AConnection.ExecuteDirect('insert into contact_groups (contact_id,group_id) values (' + InttoStr(NewContact) + ',' + IntToStr(NewGroup) + ');');
       finally
         ATransaction.Commit;
+        AConnection.Close;
       end;
     end;
-  AConnection.Close;
-  AQuery.Free;
-  ATransaction.Free;
-  AConnection.Free;
   NewContactAndGroup := true;
 end;
 
