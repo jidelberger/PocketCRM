@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, ExtCtrls,
-  StdCtrls, cySpeedButton, cyEdit, cyLabel,
+  StdCtrls, cySpeedButton, cyEdit, cyLabel,  crtgroup,
   cyBaseCombobox, TplShapeObjects, mwcrmdocument;
 
 type
@@ -57,6 +57,7 @@ type
     procedure AllesLeer();
     procedure BtnContactEditClick(Sender: TObject);
     procedure BtnCreateContactClick(Sender: TObject);
+    procedure BtnCreateGroupClick(Sender: TObject);
     procedure BtnSaveContactClick(Sender: TObject);
     procedure cySpeedButton1Click(Sender: TObject);
     procedure cySpeedButton2Click(Sender: TObject);
@@ -125,6 +126,30 @@ begin
     begin
     ContactNeu := True;
     btnSaveContact.Enabled := True;
+    end;
+end;
+
+procedure TForm1.BtnCreateGroupClick(Sender: TObject);
+var
+  res : Boolean;
+begin
+  Form2.ShowModal;
+  if Form2.GrpName <> '' then
+    begin
+    GroupDoc.GroupID:=Form2.GrpID;
+    GroupDoc.Name:=Form2.GrpName;
+    if GroupDoc.CheckID(Form2.GrpID) = false then
+      begin
+        res := GroupDoc.UpdateEntry(Form2.GrpID);
+        if res = true then
+          res := GroupDoc.NewContactAndGroup(StrToInt(EdtId.Text), Form2.GrpID);
+      end
+    else
+      begin
+        res := GroupDoc.InsertEntry();
+        if res = true then
+          res := GroupDoc.NewContactAndGroup(StrToInt(EdtId.Text), Form2.GrpID);
+      end
     end;
 end;
 
