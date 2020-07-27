@@ -60,6 +60,7 @@ type
     Function UpdateEntry(GID : Integer) : Boolean;
     Function CheckID(GID : Integer) : Boolean;
     Function FetchAll() : Boolean;
+    Function FetchGroupFromContact(cid : Integer) : Boolean;
   end;
 
 implementation
@@ -171,7 +172,7 @@ end;
 Function TCRMContactdoc.FetchEntry(ContactID : Integer) : Boolean;
 begin
   try
-    AQuery.SQL.Text := 'SELECT * FROM contacts WHERE contact_id = '+IntToStr(ContactID);
+    AQuery.SQL.Text := 'SELECT * FROM contacts WHERE contact_id = '+IntToStr(ContactID)+ ';';
     AConnection.Open;
     AQuery.Open;
   finally
@@ -192,7 +193,7 @@ end;
 Function TCRMContactdoc.UpdateEntry() : Boolean;
 Begin
   try
-    AQuery.SQL.Text := 'select * from contacts where contact_id = ' + IntToStr(ID);
+    AQuery.SQL.Text := 'select * from contacts where contact_id = ' + IntToStr(ID)+';';
     AConnection.Open;
     AQuery.Open;
     AQuery.Edit;
@@ -218,7 +219,7 @@ end;
 
 Function TCRMContactdoc.CheckID(CID : Integer) : Boolean;
 Begin
-  SQLString := 'SELECT contact_id FROM contacts WHERE contact_id = ' + IntToStr(CID);
+  SQLString := 'SELECT contact_id FROM contacts WHERE contact_id = ' + IntToStr(CID)+';';
   try
     AConnection.Open;
     AQuery.SQL.Text := SQLString;
@@ -380,7 +381,7 @@ Function TCRMGroupdoc.NewContactAndGroup(NewContact : Integer; NewGroup :Integer
 begin
   if CheckID(NewContact) = true then
     begin
-      SQLString := 'SELECT contact_id FROM contact_groups WHERE contact_id = ' + IntToStr(NewContact)+';';
+      SQLString := 'SELECT * FROM contact_groups WHERE contact_id = ' + IntToStr(NewContact)+';';
       try
         AConnection.Open;
         AQuery.SQL.Text := SQLString;
@@ -408,6 +409,29 @@ begin
       end;
     end;
   NewContactAndGroup := true;
+end;
+
+Function TCRMGroupdoc.FetchGroupFromContact(cid : Integer) : Boolean;
+var
+  gid : Integer;
+Begin
+  SQLString := 'SELECT * FROM contact_groups WHERE contact_id = ' + IntToStr(cid) + ';';
+  try
+    AQuery.SQL.Text:=SQLString;
+    AConnection.Open;
+    AQuery.Open;
+    gid := AQuery.FieldByName('group_id').AsInteger;
+    AQuery.Close;
+    SQLString := 'SELECT * FROM groups WHERE group_id = ' + IntToStr(gid) + ';';
+    GroupID := gid;
+    AQuery.SQL.Text:=SQLString;
+    AQuery.Open;
+    Name := AQuery.FieldByName('name').AsString;
+  finally
+    Aquery.Close;
+    Aconnection.Close;
+  end;
+  Result := true;
 end;
 
 end.

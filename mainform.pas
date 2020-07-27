@@ -55,10 +55,12 @@ type
     plLine1: TplLine;
     plLine2: TplLine;
     procedure AllesLeer();
+    Procedure AllesEnable(b : Boolean);
     procedure BtnContactEditClick(Sender: TObject);
     procedure BtnCreateContactClick(Sender: TObject);
     procedure BtnCreateGroupClick(Sender: TObject);
     procedure BtnSaveContactClick(Sender: TObject);
+    procedure CbGroupSelect(Sender: TObject);
     procedure cySpeedButton1Click(Sender: TObject);
     procedure cySpeedButton2Click(Sender: TObject);
     procedure EdtAdresseChange(Sender: TObject);
@@ -108,9 +110,16 @@ begin
 end;
 
 procedure TForm1.FormShow(Sender: TObject);
+var
+  Res : Boolean;
 begin
   HomePanel.BringToFront;
   LblTitel.Caption:='Start';
+  Res := GroupDoc.FetchAll();
+  if Res = true then
+    CbGroup.Items := GroupDoc.AllGroups;
+  AllesLeer();
+  AllesEnable(false);
 end;
 
 procedure TForm1.cySpeedButton1Click(Sender: TObject);
@@ -122,17 +131,26 @@ end;
 procedure TForm1.BtnCreateContactClick(Sender: TObject);
 
 begin
-  if ContactDoc.CheckID(StrToInt(EdtID.Text)) = false then
-    begin
-    ContactNeu := True;
-    btnSaveContact.Enabled := True;
+  if EdtId.Text <> '' then
+    Begin
+      if ContactDoc.CheckID(StrToInt(EdtID.Text)) = false then
+      begin
+        ContactNeu := True;
+        AllesEnable(true);
+      end;
+    end
+  else
+    Begin
+      ShowMessage('Bitte eine ID vergeben!');
     end;
+
 end;
 
 procedure TForm1.BtnCreateGroupClick(Sender: TObject);
 var
   res : Boolean;
 begin
+  Form2.GrpID := CbGroup.Items.Count + 1;
   Form2.ShowModal;
   if Form2.GrpName <> '' then
     begin
@@ -160,7 +178,7 @@ begin
   if ContactDoc.CheckID(StrToInt(EdtID.Text)) = True then
     begin
     ContactNeu := False;
-    btnSaveContact.Enabled := True;
+    AllesEnable(true);
     Res := ContactDoc.FetchEntry(StrToInt(EdtID.Text));
     if Res = true then
       Begin
@@ -171,6 +189,8 @@ begin
         EdtOrt.Text:= ContactDoc.Ort;
         EdtPhone.Text:= ContactDoc.phone;
         EdtMail.Text:= Contactdoc.email;
+        GroupDoc.FetchGroupFromContact(StrToInt(EdtId.Text));
+        CbGroup.SelText:=GroupDoc.Name;
       end;
     end;
 end;
@@ -186,6 +206,7 @@ begin
       if Res = false then
         ShowMessage('Fehler: Konnte nicht sichern');
       AllesLeer();
+      AllesEnable(False);
     end;
   if ContactNeu = false then
     Begin
@@ -193,9 +214,16 @@ begin
       if Res = false then
         ShowMessage('Fehler: Konnte nicht sichern');
       AllesLeer();
+      AllesEnable(false);
     end;
   BtnSaveContact.Enabled := false;
   ContactNeu := false;
+end;
+
+procedure TForm1.CbGroupSelect(Sender: TObject);
+begin
+  if EdtID.Text <> '' then
+    GroupDoc.NewContactAndGroup(StrToInt(EdtID.Text), (CbGroup.ItemIndex + 1));
 end;
 
 procedure TForm1.cySpeedButton2Click(Sender: TObject);
@@ -299,6 +327,20 @@ Begin
   EdtOrt.Text:= '';
   EdtPhone.Text:= '';
   EdtMail.Text := '' ;
+  CbGroup.Text:='';
+end;
+
+Procedure Tform1.AllesEnable(b : Boolean);
+Begin
+  EdtVorname.Enabled:=b;
+  EdtName.Enabled:=b;
+  EdtAdresse.Enabled:=b;
+  EdtPLZ.Enabled:=b;
+  EdtOrt.Enabled:=b;
+  EdtPhone.Enabled:=b;
+  EdtMail.Enabled:=b;
+  CbGroup.Enabled:=b;
+  BtnSaveContact.Enabled:=b;
 end;
 
 end.
