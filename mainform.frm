@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 142
+  Left = 950
   Height = 674
-  Top = 171
+  Top = 99
   Width = 927
   Caption = 'Merdeka Worlds CRM'
   ClientHeight = 674
@@ -11,7 +11,7 @@ object Form1: TForm1
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poDesktopCenter
-  LCLVersion = '7.1'
+  LCLVersion = '7.2'
   object Panel1: TPanel
     Left = 0
     Height = 50
@@ -463,6 +463,7 @@ object Form1: TForm1
       Top = 376
       Width = 100
       ItemHeight = 19
+      OnSelect = CbGroupSelect
       TabOrder = 8
     end
     object cyLabel9: TcyLabel
@@ -484,6 +485,7 @@ object Form1: TForm1
       Top = 371
       Width = 31
       Flat = True
+      OnClick = BtnCreateGroupClick
       MonochromeGlyphColor = clBlack
       Degrade.FromColor = clYellow
       Degrade.SpeedPercent = 90
@@ -506,6 +508,7 @@ object Form1: TForm1
       Top = 371
       Width = 31
       Flat = True
+      OnClick = BtnDeleteGroupClick
       MonochromeGlyphColor = clBlack
       Degrade.FromColor = clYellow
       Degrade.SpeedPercent = 90
