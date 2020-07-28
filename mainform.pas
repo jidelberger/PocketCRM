@@ -59,6 +59,7 @@ type
     procedure BtnContactEditClick(Sender: TObject);
     procedure BtnCreateContactClick(Sender: TObject);
     procedure BtnCreateGroupClick(Sender: TObject);
+    procedure BtnDeleteGroupClick(Sender: TObject);
     procedure BtnSaveContactClick(Sender: TObject);
     procedure CbGroupSelect(Sender: TObject);
     procedure cySpeedButton1Click(Sender: TObject);
@@ -168,6 +169,19 @@ begin
         if res = true then
           res := GroupDoc.NewContactAndGroup(StrToInt(EdtId.Text), Form2.GrpID);
       end
+    end;
+end;
+
+procedure TForm1.BtnDeleteGroupClick(Sender: TObject);
+
+begin
+  if MessageDlg('Warnung','Wollen Sie diese Gruppe wirklich löschen?' ,mtWarning, [mbYes, mbNo],0) = mrYes then
+    begin
+    //Gruppe Löschen und Zusammenhänge löschen.
+    if CbGroup.ItemIndex <-1 then
+      GroupDoc.DeleteGroup(cbGroup.ItemIndex + 1)
+    else
+      Showmessage('Gruppe nicht vorhanden');
     end;
 end;
 

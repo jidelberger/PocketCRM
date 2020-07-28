@@ -61,6 +61,7 @@ type
     Function CheckID(GID : Integer) : Boolean;
     Function FetchAll() : Boolean;
     Function FetchGroupFromContact(cid : Integer) : Boolean;
+    Function DeleteGroup(GID : Integer) : Boolean;
   end;
 
 implementation
@@ -430,6 +431,24 @@ Begin
   finally
     Aquery.Close;
     Aconnection.Close;
+  end;
+  Result := true;
+end;
+
+Function TCRMGroupdoc.DeleteGroup(GID : Integer) : Boolean;
+Begin
+  SQLString := 'DELETE FROM comtact_groups WHERE group_id = ' + IntToStr(gid) + ';';
+  try
+    AConnection.Open;
+    ATransaction.StartTransaction;
+    AConnection.ExecuteDirect(SQLString);
+    SQLString := 'DELETE FROM groups WHERE group_id = ' + IntToStr(gid) + ';';
+    AConnection.Open;
+    ATransaction.StartTransaction;
+    AConnection.ExecuteDirect(SQLString);
+  finally
+    ATransaction.Commit;
+    AConnection.Close;
   end;
   Result := true;
 end;
